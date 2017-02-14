@@ -41,19 +41,34 @@ test.Contains = function(passFunction, result, answer = "expected " + passFuncti
 };
 
 test.HasContent = function(website, result, answer = "WRONG") {
-    document.write("<iframe id='iframe01' height='100' width='100' src='src/test.htm'></iframe>");
-
-    document.getElementById('iframe01').onload = function() {
-        var content = document.getElementById('iframe01').contentWindow.document.getElementById('testing').innerHTML
-        console.log(content);
-        if (content.match("ANYETHINGIjndfadsfoaskjd")) {
-            console.log(true);
-            return true;
-        } else {
-            console.log(answer);
-            return answer;
-        }
+    function load_home() {
+     document.getElementById("test-page").innerHTML='<object type="text/html" data="src/test.htm" ></object>';
     }
+
+    load_home();
+
+    // var frame = document.getElementById('your-frame-id');
+    //
+    // document.write("<iframe id='iframe01' height='100' width='100' src='src/test.htm'></iframe>");
+    //
+    // document.getElementById('iframe01').onload = function() {
+    //     // var content = document.getElementById('iframe01').contentWindow.document.getElementById('testing').innerHTML
+    //     var frame = document.getElementById('iframe01');
+    //
+    //
+    //     // console.log(content);
+    //     function matchContent() {
+    //         var content = document.getElementById('testing').innerHTML;
+    //         if (content.match("ANYETHINGIjndfadsfoaskjd")) {
+    //             console.log(true);
+    //             return true;
+    //         } else {
+    //             console.log(answer);
+    //             return answer;
+    //         }
+    //     }
+    //     frame.contentWindow.postMessage(matchContent(), '*');
+    // }
 };
 
 test.output = function(title, result) {
