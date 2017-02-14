@@ -41,11 +41,43 @@ test.Contains = function(passFunction, result, answer = "expected " + passFuncti
 };
 
 test.HasContent = function(website, result, answer = "WRONG") {
-    function load_home() {
-     document.getElementById("test-page").innerHTML='<object type="text/html" data="src/test.htm" ></object>';
-    }
 
-    load_home();
+    document.addEventListener("DOMContentLoaded", function(){
+        document.getElementById("test-page").innerHTML = '<object id="htmlObject" type="text/html" data="src/test.htm" ></object>';
+
+        var content = document.getElementById('testing');//.contentWindow.document.getElementById('testing').innerHTML;
+        console.log(content.innerHTML);
+        if (content.match("THE")) {
+            console.log(true);
+            return true;
+        } else {
+            console.log(answer);
+            return answer;
+        }
+
+    });
+    //
+    // window.onload = function (evt) {
+    // var obj;
+    // if (document.getElementById && (obj =
+    // document.getElementById('htmlObject'))) {
+    // var objDoc;
+    // if (obj.contentDocument) {
+    // objDoc = obj.contentDocument;
+    // }
+    // else if (obj.object) {
+    // objDoc = obj.object;
+    // }
+    // if (objDoc && objDoc.body) {
+    // alert(objDoc.body.innerHTML);
+    // }
+    // }
+    // };
+    // function load_home() {
+    //
+    // }
+    //
+    // load_home();
 
     // var frame = document.getElementById('your-frame-id');
     //
@@ -56,17 +88,8 @@ test.HasContent = function(website, result, answer = "WRONG") {
     //     var frame = document.getElementById('iframe01');
     //
     //
-    //     // console.log(content);
-    //     function matchContent() {
-    //         var content = document.getElementById('testing').innerHTML;
-    //         if (content.match("ANYETHINGIjndfadsfoaskjd")) {
-    //             console.log(true);
-    //             return true;
-    //         } else {
-    //             console.log(answer);
-    //             return answer;
-    //         }
-    //     }
+        // console.log(content);
+
     //     frame.contentWindow.postMessage(matchContent(), '*');
     // }
 };
