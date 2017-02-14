@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Notes</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="src/interface.js" defer></script>
+    <script src="src/list.js"></script>
+    <script src="src/note.js"></script>
+</head>
+<body>
+    <h1>Hello, welcome to notes</h1>
+    <div id="wrapper">
+        <section id="newnote">
+            <h2>New Note</h2>
+            <textarea id="new-note-content"></textarea>
+            <div id="addnote">
+                Add note
+            </div>
+        </section>
+        <div id="current-note-container">
+            <h3>Current Note</h3>
+            <section id="currentnote">
+            </section>
+        </div>
+        <div id="notes-container">
+            <h3>Notes List</h3>
+            <section id="notelist">
+                <ul id="notes">
+                </ul>
+            </section>
+        </div>
+    </div>
+</body>
+<footer>
+</footer>
+
+</html>
