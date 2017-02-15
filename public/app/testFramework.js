@@ -43,7 +43,7 @@
   function output (title, result) {
     var css = "";
     if (result!==true){css="in"; fail++;}else{pass++;}
-    var output = "<div id='"+css+"correct'>&nbsp&nbsp&nbsp&nbsp"+title+": "+result+"</div>";
+    var output = "<div id='"+css+"correct'>&nbsp&nbsp&nbsp&nbsp"+title+"</div>";
     return output;
   }
 
