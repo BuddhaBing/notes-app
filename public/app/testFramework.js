@@ -28,6 +28,7 @@
   function createFrame(website){
     document.write("<div id='"+toString(tests)+"'>&nbsp&nbsp&nbsp&nbspWaiting Results!"+(tests)+"</div>");
     document.write("<iframe id='iframe"+tests+"' height='0' width='0' src=src/testFrameworkSpec/" + website + "></iframe>");
+    return document.getElementById('iframe'+tests)
   }
 
   function HasContent(website, result, answer = "expected website to contain: "+result) {
@@ -67,10 +68,10 @@
 
   function it(title, passFunction, website){
     if(website !== null){
-      createFrame(website);
-      document.getElementById('iframe'+tests).onload = function(targeter) {
-        target = targeter.currentTarget
-      }
+      createFrame(website).onload = function(targeter){
+        target = targeter.currentTarget;
+        test = parseInt(target.id.slice(6, target.id.length));
+        
       passFunction();
     }
     tests++;
