@@ -4,6 +4,10 @@
   var fail = 0;
   var tests = 0;
   var myResult = [];
+  var myTest = [];
+  var myTitle = [];
+  var itFunctions = [];
+  var befores = {};
 
   function Equals(passFunction, result, answer="expected " + passFunction + " to equal " + result) {
     if (passFunction===result){return true;}else{return answer;}
@@ -31,30 +35,34 @@
     return document.getElementById('iframe'+tests)
   }
 
-  function HasContent(website, result, answer = "expected website to contain: "+result) {
-
-      var content = target.contentWindow.document.getElementById('testing').innerHTML
-      if (content.includes(result)) {
-        myResult.push({"title":tests, "result":true});
-      } else {
-        myResult.push({"title":tests, "result":answer});
-      }
-      return;
-    };
+  function getResultFrame(i){
+    return document.getElementById("test"+myTest[i])
+  }
+  function getFrame(i){
+    return document.getElementById('iframe'+i)
   }
 
-  function Click(website, element, answer = "expected click on button: "+element){
+  function HasContent(testNumber, result, answer = "expected website to contain: "+result) {
+    console.log(testNumber)
+    var content = getFrame(testNumber).innerHTML
+    if (content.includes(result)) {
+      myResult.push({"title":tests, "result":true});
+    } else {
+      myResult.push({"title":tests, "result":answer});
+    }
+  }
+
+  function HasElement(website, element, answer = "expected click on button: "+element){
+    createFrame(website);
+    myTest.push(tests);
     document.getElementById('iframe'+tests).onload = function(targeter){
-      target = targeter.currentTarget
-      test = parseInt(target.id.slice(6, target.id.length));
-      var buttonCheck = target.contentWindow.document.getElementById(element);
-      if (typeof(buttonCheck) !== 'undefined') {
-        buttonCheck.click();
-        myResult.push({"title":test, "result":true});
+      var target = targeter.currentTarget;
+      var elementCheck = target.contentWindow.document.getElementById(element);
+      if (elementCheck !== null) {
+        myResult.push(true);
       } else {
-        myResult.push({"title":test, "result":answer});
+        myResult.push(answer);
       }
-      console.log(myResult)
       return;
     };
   }
@@ -67,34 +75,38 @@
   }
 
   function it(title, passFunction, website){
-    if(website !== null){
+    tests++;
+    beforeEachCaller();
+    console.log("hi out")
+    console.log(website)
+    if(website){
+      console.log("hi in")
       createFrame(website).onload = function(targeter){
         target = targeter.currentTarget;
         test = parseInt(target.id.slice(6, target.id.length));
-        
-      passFunction();
+        var result = passFunction(test)
+        myTitle.push(title)
+        setTimeout(delayedAnswer, 500,tests);
+      }
+      return
     }
-    tests++;
     var result = passFunction();
-    if (typeof(result) === 'undefined') {
-      var checkExist = setInterval(function() {
-        clearInterval(checkExist);
-        myResult.forEach(function(test){
-          document.getElementById(toString(tests)).innerHTML = output(test["title"], test["result"]);
-        })
-        document.getElementById('testResults').innerHTML = "Pass = " + pass + " Fail = " + fail
-      }, 1000);
-    } else {
-      document.write(output(title, result));
-    }
-  }
+    document.write(output(title, result));
+}
 
 
   function initiate(){
     document.write("<div id='testResults'>Pass = 0 Fail = 0</div>");
   }
 
+  function delayedAnswer(number){
+    var i = myTest.indexOf(number);
+    document.getElementById("test"+myTest[i]).innerHTML = output(myTitle[i], myResult[i]);
+    document.getElementById('testResults').innerHTML = "Pass = " + pass + " Fail = " + fail;
+  }
+
   function describe (title, passFunction) {
+    clearBefores();
     document.write("<b>"+title+"</b>");
     passFunction();
     displayResult();
@@ -102,6 +114,20 @@
 
   function displayResult(){
     document.write("<script>document.getElementById('testResults').innerHTML = 'Pass = "+ pass +" Fail = "+ fail +"'</script>");
+  }
+
+  function beforeEach(beforeEachFunction) {
+      befores = beforeEachFunction;
+  }
+
+  function beforeEachCaller() {
+      if(typeof(befores) === "function") {
+          return befores();
+      }
+  }
+
+  function clearBefores() {
+      befores = {};
   }
 
   initiate();
@@ -113,8 +139,12 @@
   exports.assert.LessThan = LessThan;
   exports.assert.Contains = Contains;
   exports.assert.HasContent = HasContent;
+  exports.assert.HasElement = HasElement;
 
-  exports.Click = Click;
+  exports.beforeEach = beforeEach;
+  exports.beforeEachCaller = beforeEachCaller;
+  exports.clearBefores = clearBefores;
+
   exports.it = it;
   exports.describe = describe;
 
