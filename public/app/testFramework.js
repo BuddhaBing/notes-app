@@ -2,7 +2,7 @@
 (function(exports){
   var pass = 0;
   var fail = 0;
-  var tests = 0;
+  var testNumber = 0;
   var myResult = [];
   var myTest = [];
   var myTitle = [];
@@ -30,12 +30,16 @@
   }
 
   function createFrame(website){
-    document.write("<div id='"+toString(tests)+"'>&nbsp&nbsp&nbsp&nbspWaiting Results!"+(tests)+"</div>");
-    document.write("<iframe id='iframe"+tests+"' height='0' width='0' src=src/testFrameworkSpec/" + website + "></iframe>");
-    return document.getElementById('iframe'+tests)
+    document.write("<div id='test"+testNumber+"'>&nbsp&nbsp&nbsp&nbspWaiting Results!"+(testNumber)+"</div>");
+    document.write("<iframe id='iframe"+testNumber+"' height='0' width='0' src=" + website + "></iframe>");
+    return document.getElementById('iframe'+testNumber)
   }
 
   function getResultFrame(i){
+    console.log(i)
+//    var i = myTest.indexOf(number);
+//    console.log(myTest.indexOf(i))
+    console.log(document.getElementById("test"+myTest[i]))
     return document.getElementById("test"+myTest[i])
   }
   function getFrame(i){
@@ -43,28 +47,23 @@
   }
 
   function HasContent(testNumber, result, answer = "expected website to contain: "+result) {
-    console.log(testNumber)
     var content = getFrame(testNumber).innerHTML
+    myTest.push(testNumber);
     if (content.includes(result)) {
-      myResult.push({"title":tests, "result":true});
+      myResult.push(true);
     } else {
-      myResult.push({"title":tests, "result":answer});
+      myResult.push(answer);
     }
   }
 
-  function HasElement(website, element, answer = "expected click on button: "+element){
-    createFrame(website);
-    myTest.push(tests);
-    document.getElementById('iframe'+tests).onload = function(targeter){
-      var target = targeter.currentTarget;
-      var elementCheck = target.contentWindow.document.getElementById(element);
-      if (elementCheck !== null) {
-        myResult.push(true);
-      } else {
-        myResult.push(answer);
-      }
-      return;
-    };
+  function HasElement(testNumber, element, answer = "expected click on button: "+element){
+    var element = getFrame(testNumber).innerHTML
+    myTest.push(testNumber);
+    if (element) {
+      myResult.push(true);
+    } else {
+      myResult.push(answer);
+    }
   }
 
   function output (title, result) {
@@ -75,24 +74,22 @@
   }
 
   function it(title, passFunction, website){
-    tests++;
+    testNumber++;
     beforeEachCaller();
-    console.log("hi out")
-    console.log(website)
     if(website){
-      console.log("hi in")
       createFrame(website).onload = function(targeter){
         target = targeter.currentTarget;
         test = parseInt(target.id.slice(6, target.id.length));
         var result = passFunction(test)
-        myTitle.push(title)
-        setTimeout(delayedAnswer, 500,tests);
+        //close the frame
+        //update results
+        delayedAnswer(test);
       }
       return
     }
     var result = passFunction();
     document.write(output(title, result));
-}
+  }
 
 
   function initiate(){
@@ -101,7 +98,8 @@
 
   function delayedAnswer(number){
     var i = myTest.indexOf(number);
-    document.getElementById("test"+myTest[i]).innerHTML = output(myTitle[i], myResult[i]);
+
+    getResultFrame(number).innerHTML = output(myTitle[i], myResult[i]);
     document.getElementById('testResults').innerHTML = "Pass = " + pass + " Fail = " + fail;
   }
 
@@ -117,17 +115,17 @@
   }
 
   function beforeEach(beforeEachFunction) {
-      befores = beforeEachFunction;
+    befores = beforeEachFunction;
   }
 
   function beforeEachCaller() {
-      if(typeof(befores) === "function") {
-          return befores();
-      }
+    if(typeof(befores) === "function") {
+      return befores();
+    }
   }
 
   function clearBefores() {
-      befores = {};
+    befores = {};
   }
 
   initiate();
