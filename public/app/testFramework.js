@@ -31,9 +31,7 @@
   }
 
   function HasContent(website, result, answer = "expected website to contain: "+result) {
-    createFrame(website);
-    document.getElementById('iframe'+tests).onload = function(targeter) {
-      target = targeter.currentTarget
+
       var content = target.contentWindow.document.getElementById('testing').innerHTML
       if (content.includes(result)) {
         myResult.push({"title":tests, "result":true});
@@ -45,7 +43,6 @@
   }
 
   function Click(website, element, answer = "expected click on button: "+element){
-    createFrame(website);
     document.getElementById('iframe'+tests).onload = function(targeter){
       target = targeter.currentTarget
       test = parseInt(target.id.slice(6, target.id.length));
@@ -68,7 +65,14 @@
     return output;
   }
 
-  function it(title, passFunction){
+  function it(title, passFunction, website){
+    if(website !== null){
+      createFrame(website);
+      document.getElementById('iframe'+tests).onload = function(targeter) {
+        target = targeter.currentTarget
+      }
+      passFunction();
+    }
     tests++;
     var result = passFunction();
     if (typeof(result) === 'undefined') {
@@ -83,6 +87,7 @@
       document.write(output(title, result));
     }
   }
+
 
   function initiate(){
     document.write("<div id='testResults'>Pass = 0 Fail = 0</div>");
